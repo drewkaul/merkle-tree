@@ -1,3 +1,5 @@
+Lab Completed By Drew Kaul and Felipe Campos
+
 # Merkle Proof and Verification
 
 ## Introduction
