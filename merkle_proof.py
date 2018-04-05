@@ -11,7 +11,32 @@ def merkle_proof(tx, merkle_tree):
 
     Return this data as a list; remember that order matters!
     """
-    #### YOUR CODE HERE
+    proof = []
+    tx_ind = merkle_tree.leaves.index(tx)
+    node = merkle_tree._root
+    
+    lower = 0
+    upper = len(merkle_tree.leaves)
+    depth = 1
+
+    while upper - lower > 1:
+        mid = (lower + upper) // 2
+        if tx_ind >= mid:
+            if type(node._left) != str:
+                proof.append(Node(depth, "l", node._left.data))
+            else:
+                proof.append(Node(depth, "l", node._left))
+            lower = mid
+            node = node._right
+        else:
+            if type(node._right) != str:
+                proof.append(Node(depth, "r", node._right.data))
+            else:
+                proof.append(Node(depth, "r", node._right))
+            upper = mid
+            node = node._left
+        depth += 1
+    return proof
 
 
 def get_max_depth_node(nodes):
@@ -29,7 +54,14 @@ def verify_proof(tx, merkle_proof):
     that the correct block header can be retrieved by properly hashing the tx
     along with every other piece of data in the proof in the correct order
     """
-    #### YOUR CODE HERE
+    data = tx
+    proof = merkle_proof[::-1]
+    for i in range(0, len(proof)):
+        if proof[i].direction == 'l':
+            data = hash_data(proof[i].tx + data)
+        elif proof[i].direction == 'r':
+            data = hash_data(data + proof[i].tx)
+    return data
 
 
     
